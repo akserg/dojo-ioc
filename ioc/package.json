@@ -1,0 +1,39 @@
+{
+    "name": "dojo-ioc",
+    "version": "0.1",
+    "description": "Javascript IOC container for DOJO.",
+    "keywords": ["dojo ioc"],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/akserg/dojo-ioc"
+        }
+    ],
+    "bugs": "https://github.com/akserg/dojo-ioc/issues",
+    "maintainers": [
+        {
+            "name": "Sergey Akopkokhyants"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "Sergey Akopkokhyants"
+        }
+    ],
+    "dependencies": {
+        "dojo": "1.7"
+    },
+    "mappings": {
+        "dojo": "http://download.dojotoolkit.org/release-1.7.1"
+    },
+    "main": "./ApplicationContectFactory",
+    "directories": {
+        "test": "test"
+    }
+}
