@@ -5,16 +5,15 @@ DOJO-IOC is an Inversion of Control Container for Javascript application written
 The main features includes:
 ----------------------
 
-### Javascript based definition configuration:
-Definition configuration is written on Javascript and support:
+### Definition configuration is written on Javascript and support:
 - Full class difinition with type, constructor argumens and properties
 - Class instantiation from reference to other definition, factory reference and types
 
 ### Dependency Injection:
-Constructor and Property Dependency Injection;
+- Constructor and Property Dependency Injection;
 
 ### Lazy class management:
-Lazy DOJO class loading and instantiation;
+- Lazy DOJO class loading and instantiation;
 
 ### Productivity:
 
