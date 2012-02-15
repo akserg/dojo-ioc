@@ -6,7 +6,7 @@ The main features includes:
 ----------------------
 
 ### Definition configuration is written on Javascript and support:
-- Full class difinition with type, constructor argumens and properties
+- Full class difinition with type, constructor arguments and properties
 - Class instantiation from reference to other definition, factory reference and types
 
 ### Dependency Injection:
