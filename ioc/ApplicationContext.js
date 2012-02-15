@@ -1,10 +1,11 @@
 define([
 	"dojo/_base/declare",
 	"dojo/_base/lang", // For hitch
+	"dojo/_base/Deferred",
 	"./ObjectFactory",
 	"./RequireLoader",
 	"./Util"
-], function(declare, lang, ObjectFactory, RequireLoader, Util){
+], function(declare, lang, Deferred, ObjectFactory, RequireLoader, Util){
 	
 	var ApplicationContext = declare("ioc.ApplicationContext", null, {
 		// _definitions:Object
@@ -37,8 +38,6 @@ define([
 			//		public
 			// ids: String
 			//		Commas separated identifier of requested components.
-			// callback:Function?
-			//		Callback function
 			// defs:Array
 			//		Keeps all found definitions.
 			// sources:Array
@@ -46,12 +45,6 @@ define([
 			
 			// Turn arguments list in to array of definition identifiers
 			var ids = Array.prototype.slice.call(arguments, 0);
-			
-			// The last argument should be the callback
-			var callback = null;
-			if(ids.length > 1 && typeof ids[ids.length - 1] === "function") {
-				callback = ids.pop();
-			}
 			
 			console.log("Getting definitions for (" + ids.join(", ") + ")");
 			
@@ -72,6 +65,9 @@ define([
 				}			
 			}
 			
+			// Create Deferred object for managing our promise situation 
+			var def = new Deferred();
+			
 			// Load all modules
 			this.loader.load(sources, lang.hitch(this, function(){
 				var modules = [];
@@ -81,10 +77,10 @@ define([
 					modules.push(module);
 				}
 
-				if(callback) {
-					callback.apply(this, modules);
-				}
+				def.resolve.apply(this, modules);
 			})); 
+			
+			return def;
 		},
 		
 		_sourcePathResolver : function(/*String*/value) {
