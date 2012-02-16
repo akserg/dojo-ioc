@@ -17,6 +17,9 @@ define([
 		// loader:Object
 		//		Instance of Class loader
 		loader : null,
+		// async:Boolean
+		//		Flag shows async mode comes from dojoConfig or djConfig
+		async : false,
 		
 		constructor : function(/*Object|Array?*/definitions) {
 			// summary:
@@ -29,6 +32,12 @@ define([
 			this.addDefinitions(definitions);
 			this.objectFactory = new ObjectFactory(this._definitions);
 			this.loader = new RequireLoader();
+			// Check our current mode (asynchronous or synchronous)
+			var cfg = dojoConfig || djConfig || null;
+			if (cfg) {
+				this.async = cfg.async;
+			}
+			console.debug('async: ' + this.async);
 		},
 		
 		getObject : function(/*...*/) {
@@ -65,22 +74,47 @@ define([
 				}			
 			}
 			
-			// Create Deferred object for managing our promise situation 
-			var def = new Deferred();
-			
-			// Load all modules
-			this.loader.load(sources, lang.hitch(this, function(){
+			// Depends on mode we will return either Deferred instance for asynchronous mode
+			// or instance of requested objects
+			if (this.async) {
+				// Create Deferred object for managing our promise situation 
+				var def = new Deferred();
+				
+				// Load all modules
+				this.loader.load(sources, lang.hitch(this, function(){
+					var modules = [];
+					for( var j = 0; j < ids.length; j++) {
+						var module = this.objectFactory.getObject(ids[j]);
+						module._appContext = this;						
+						modules.push(module);
+					}
+	
+					def.resolve.apply(this, modules);
+				})); 
+				
+				return def;
+			} else {
 				var modules = [];
-				for( var j = 0; j < ids.length; j++) {
-					var module = this.objectFactory.getObject(ids[j]);
-					module._appContext = this;						
-					modules.push(module);
+				// Load all modules in synchronous mode
+				this.loader.load(sources, lang.hitch(this, function(){
+					
+					for( var j = 0; j < ids.length; j++) {
+						var module = this.objectFactory.getObject(ids[j]);
+						module._appContext = this;						
+						modules.push(module);
+					}
+
+				}));
+				
+				if (modules.length > 1) {
+					return modules;
+				} else if (modules.length == 1) {
+					return modules[0];
+				} else {
+					return null;
 				}
 
-				def.resolve.apply(this, modules);
-			})); 
-			
-			return def;
+			}
 		},
 		
 		_sourcePathResolver : function(/*String*/value) {
