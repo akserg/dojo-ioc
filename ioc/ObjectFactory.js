@@ -54,7 +54,7 @@ define([
 			
 			var metadata = this.getById(id);
 			
-			metadata = this._checkPrimitiveType(metadata);
+			metadata = Util.checkPrimitiveType(metadata);
 			
 			if (metadata) {
 				if (!metadata.scope) {
@@ -108,34 +108,6 @@ define([
 				}
 			}			
 			return instance;
-		},
-		
-		_checkPrimitiveType : function(metadata/*Primitives|Object*/) {
-			// summary:
-			//		If metadata contains primitive class definition - update it accordingly.
-			// tag:
-			//		private
-			// metadata:
-			//		Standard Object definition or primitives
-			var result = null;
-			if (lang.isString(metadata)) {
-				// Simple string
-				result = { type : "String", args : [metadata]};
-			} else if (typeof metadata === "number") {
-				// Simple number
-				result = { type : "Number", args : [metadata]};
-			} else if (metadata instanceof Date) {
-				// Simple date
-				result = { type : "Date", args : [metadata]};
-			} else if (dojo.isArray(metadata)) {
-				// Simple array
-				result = { type : "Array", args : metadata};
-			} else if (typeof metadata === 'boolean') {
-				// Simple array
-				result = { type : "Boolean", args : metadata};
-			}
-			
-			return result ? result : metadata;
 		},
 		
 		_createInstance : function(/*String|Object*/type, /*Array?*/argData, /*Object?*/propData, /*String?*/extendsRef) {

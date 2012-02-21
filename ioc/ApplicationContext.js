@@ -168,6 +168,8 @@ define([
 			defs = defs || [];
 			var metadata = this.objectFactory.getById(id);
 
+			metadata = Util.checkPrimitiveType(metadata);
+			
 			// metadata has next properties:
 			// type - class name
 			// extendsRef - pointer to super class
