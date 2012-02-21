@@ -80,8 +80,33 @@ define([
 					console.debug("Creating new instance for ", id, "...");
 					instance = this._createInstance(metadata.type, metadata.args, metadata.props, metadata.extendsRef);
 				}
-			}
-			
+				// Run 'postInit' feature
+				if (metadata.postInit) {
+					var postInitName = null;
+					var postInitArgs = null;
+					// Process special 'postInit' structure
+					if (lang.isString(metadata.postInit)) {
+						// metadata.postInit is string - use as is
+						postInitName = metadata.postInit;
+					} else {
+						// 'postInit' is object and it must has 'name' and 'args' properties
+						if (metadata.postInit['name'] && metadata.postInit['args']) {
+							// Name of method
+							postInitName = metadata.postInit['name'];
+							// Create arguments for 'postInit'
+							postInitArgs = this._createArgs(metadata.postInit['args']);
+						} else {
+							throw new Error('Incorrect definition of postInit function in ' + metadata.type);
+						}
+					}
+					if (instance[postInitName] && dojo.isFunction(instance[postInitName])) {
+						instance[postInitName].apply(instance, postInitArgs);
+					}
+				} else if (instance['postInit'] && dojo.isFunction(instance['postInit'])) {
+					// Call 'postInit' method in instance
+					instance['postInit'].apply(instance, null);
+				}
+			}			
 			return instance;
 		},
 		
