@@ -37,6 +37,7 @@ define([
      	 		
      	 		declare("TestPostInitComplexClazz", null, {
      	 			name : null,
+     	 			link : null,
      	 			
      	 			constructor : function(newname) {
      	 				this.name = newname;
@@ -48,30 +49,44 @@ define([
      	 			}
      	 		});
      	 		
+     	 		declare("TestRefClazz", null, {
+     	 			name : null
+     	 		});
+     	 		
      	 		var def = {
-     	 			"name" : "Mickle",
-     	 			"numInt" : 10,
-     	 			"numFloat" : 3.141567,
-     	 			"date" : new Date("31/12/2012").getTime(),
-     	 			"array" : ["1", 2, true],
+     	 			name : "Mickle",
+     	 			numInt : 10,
+     	 			numFloat : 3.141567,
+     	 			date : new Date("31/12/2012").getTime(),
+     	 			array : ["1", 2, true],
      	 			
-     	 			"postInitTest" : {
+     	 			postInitTest : {
      	 				type : "TestPostInitClazz",
      	 				args : ["New Name"]
      	 			},
      	 			
-     	 			"postInitRenamedTest" : {
+     	 			postInitRenamedTest : {
      	 				type : "TestPostInitRenamedClazz",
      	 				args : ["New Name"],
      	 				postInit : "postInit2"
      	 			},
      	 			
-     	 			"TestPostInitComplexClazz" : {
+     	 			testPostInitComplexClazz : {
      	 				type : "TestPostInitComplexClazz",
-     	 				args : ["New Name"],
+     	 				args : ["*postInitRenamedTest.name"],
+     	 				props : {
+     	 					link : "*postInitTest"
+     	 				},
      	 				postInit : {
      	 					name : "postInit3",
      	 					args : ["Changed3"]
+     	 				}
+     	 			},
+     	 			
+     	 			testRefClazz : {
+     	 				type : "TestRefClazz",
+     	 				props : {
+     	 					name : "*testPostInitComplexClazz.link.name"
      	 				}
      	 			}
      	 		};
@@ -87,7 +102,8 @@ define([
    		 		doh.assertEqual(objectFactory.getObject("array")[2], true);
    		 		doh.assertEqual(objectFactory.getObject("postInitTest").name, "Changed");
    		 		doh.assertEqual(objectFactory.getObject("postInitRenamedTest").name, "Changed2");
-   		 		doh.assertEqual(objectFactory.getObject("TestPostInitComplexClazz").name, "Changed3");
+   		 		doh.assertEqual(objectFactory.getObject("testPostInitComplexClazz").name, "Changed3");
+   		 		doh.assertEqual(objectFactory.getObject("testRefClazz").name, "Changed");
      	 	}
     	}
     ]);

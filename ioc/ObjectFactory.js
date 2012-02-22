@@ -221,12 +221,16 @@ define([
 					// if arg has ref
 					if((isObject && argData.ref) || (typeof argData === "string" && argData.match(/^\*[^\*]/) !== null)) {
 						// 'ref' specifying or argData is string with '*' letter (means reference to definition in configuration)
-						// So we take 'ref' either definition id after '*' letter
-						args[i] = this.getObject(argData.ref || argData.substr(1));
-						// If we specifying 'ref' and 'prop' - find property and use it instead of referenced definition 
-						if (argData.ref && argData.prop) {
+						var refDef = null;
+						if (argData.ref) {
+							refDef = { ref : argData.ref, prop : argData.prop };
+						} else {
+							refDef = this._getRefDef(argData.substr(1));
+						}
+						args[i] = this.getObject(refDef.ref);
+						if (refDef.prop && typeof refDef.prop === "string") {
 							// Dive into object properties path
-							args[i] = Util.getDojoObject(argData.prop, args[i]);
+							args[i] = Util.getDojoObject(refDef.prop, args[i]);
 						}
 					} else if(isObject && argData.factoryRef) {
 						// 'factoryRef' specifying
@@ -244,11 +248,16 @@ define([
 
 								if(obj && (obj.ref || (typeof obj === "string" && obj.match(/^\*[^\*]/) !== null))) {
 									// 'ref' specifying or obj is string with '*' letter (means reference to definition in configuration)
-									// So we take 'ref' either definition id after '*' letter
-									args[i][key] = this.getObject(obj.ref || obj.substr(1));
-									if (obj.prop && typeof obj.prop === "string") {
+									var refDef = null;
+									if (obj.ref) {
+										refDef = { ref : obj.ref, prop : obj.prop };
+									} else {
+										refDef = this._getRefDef(obj.substr(1));
+									}
+									args[i][key] = this.getObject(refDef.ref);
+									if (refDef.prop && typeof refDef.prop === "string") {
 										// Dive into object properties path
-										args[i][key] = Util.getDojoObject(obj.prop, args[i][key]);
+										args[i][key] = Util.getDojoObject(refDef.prop, args[i][key]);
 									}
 								} else if(obj && obj.factoryRef) {
 									// 'factoryRef' specifying
@@ -269,6 +278,24 @@ define([
 				}
 			}
 			return args;
+		},
+		
+		_getRefDef : function(id/*string*/)/*string*/ {
+			var res = {};
+			var ids = id.split(".");
+			if (ids.length > 0) {
+				res.ref = ids[0];
+				// If ids has more items means it contains properties
+				if (ids.length > 1) {
+					// Remove first element of array contains id
+					ids.shift();
+					// Joint left items of array
+					res.prop = ids.join(".");
+				}
+			} else {
+				res.ref = id;
+			}
+			return res;
 		},
 		
 		_prepareTypeToExtension : function(/*Function*/type, /*Function*/superType) {
