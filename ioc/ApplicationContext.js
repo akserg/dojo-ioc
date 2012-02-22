@@ -224,7 +224,15 @@ define([
 					var isObject = typeof argData === "object";
 					// if arg has ref
 					if((isObject && argData.ref) || (typeof argData === "string" && argData.match(/^\*[^\*]/) !== null)) {
-						defs = this._getDefinitions(argData.ref || argData.substr(1), defs);
+						
+						var refDef = null;
+						if (argData.ref) {
+							refDef = { ref : argData.ref, prop : argData.prop };
+						} else {
+							refDef = Util.getRefDef(argData.substr(1));
+						}
+						
+						defs = this._getDefinitions(refDef.ref, defs);
 					}
 					else if(isObject && argData.factoryRef) {
 						defs = this._getDefinitions(argData.factoryRef, defs);
@@ -238,7 +246,13 @@ define([
 							if(argData.hasOwnProperty(key)) {
 								var obj = argData[key];
 								if(obj && (obj.ref || (typeof obj === "string" && obj.match(/^\*[^\*]/) !== null))) {
-									defs = this._getDefinitions(obj.ref || obj.substr(1), defs);
+									var refDef = null;
+									if (obj.ref) {
+										refDef = { ref : obj.ref, prop : obj.prop };
+									} else {
+										refDef = Util.getRefDef(obj.substr(1));
+									}
+									defs = this._getDefinitions(refDef.ref, defs);
 								}
 								else if(obj && obj.factoryRef) {
 									defs = this._getDefinitions(obj.factoryRef, defs);

@@ -225,7 +225,7 @@ define([
 						if (argData.ref) {
 							refDef = { ref : argData.ref, prop : argData.prop };
 						} else {
-							refDef = this._getRefDef(argData.substr(1));
+							refDef = Util.getRefDef(argData.substr(1));
 						}
 						args[i] = this.getObject(refDef.ref);
 						if (refDef.prop && typeof refDef.prop === "string") {
@@ -252,7 +252,7 @@ define([
 									if (obj.ref) {
 										refDef = { ref : obj.ref, prop : obj.prop };
 									} else {
-										refDef = this._getRefDef(obj.substr(1));
+										refDef = Util.getRefDef(obj.substr(1));
 									}
 									args[i][key] = this.getObject(refDef.ref);
 									if (refDef.prop && typeof refDef.prop === "string") {

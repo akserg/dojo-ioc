@@ -91,5 +91,31 @@ define([
 		return result ? result : metadata;
 	};
 	
+	Util.getRefDef = function(id/*string*/)/*string*/ {
+		// summary:
+		//		Convert id to object with ref and prop properties
+		// tag:
+		//		public
+		// id:Object|String
+		//		Object or string contains reference definition info.
+		// returns:Object
+		//		id converted to Object with "ref" and "prop" properties
+		var res = {};
+		var ids = id.split(".");
+		if (ids.length > 0) {
+			res.ref = ids[0];
+			// If ids has more items means it contains properties
+			if (ids.length > 1) {
+				// Remove first element of array contains id
+				ids.shift();
+				// Joint left items of array
+				res.prop = ids.join(".");
+			}
+		} else {
+			res.ref = id;
+		}
+		return res;
+	};
+	
 	return Util;
 });
