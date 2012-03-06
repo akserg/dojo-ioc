@@ -9,19 +9,6 @@ define([
 		//		public static
 	};
 	
-	Util.isArray = function(/*Object*/obj) {
-		// summary:
-		//		Strict check to see if an object is an array.
-		// tags:
-		//		public static
-		// obj:
-		// 		Any type to check
-		// returns:Boolean
-		// 		Result of check
-
-		return Array.isArray(obj) || Object.prototype.toString.call(obj) === "[object Array]";
-	};
-
 	Util.inArray = function(/*Object*/elem, /*Array*/array) {
 		// summary:
 		//		Check is element in array

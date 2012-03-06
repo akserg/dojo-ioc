@@ -104,7 +104,7 @@ define([
 					}
 				} else if (instance['postInit'] && dojo.isFunction(instance['postInit'])) {
 					// Call 'postInit' method in instance
-					instance['postInit'].apply(instance, null);
+					instance['postInit'].apply(instance, []);
 				}
 			}			
 			return instance;

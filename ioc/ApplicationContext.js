@@ -138,7 +138,7 @@ define([
 			// defs:
 			//		Map or Array of Maps of definitions to add.
 			
-			if (!Util.isArray(defs)) {
+			if (!dojo.isArray(defs)) {
 				defs = [defs];
 			}
 			
